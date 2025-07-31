@@ -1,0 +1,10 @@
+# Node modules and logs
+
+npm-debug.log
+dist
+build
+
+.git
+.vscode
+*.md
+.log*

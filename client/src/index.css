@@ -1,0 +1,88 @@
+/* 1. Import the necessary luxury fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;500;700&display=swap');
+
+/* 2. Add Tailwind's base styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3. Define your custom color theme */
+@layer base {
+  :root {
+    /* Light Theme - Your Green & Gold Palette (with corrected HSL syntax) */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 164 76% 23%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 44 69% 55%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 30 16% 90%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 164 80% 20%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 16% 85%; /* Using a subtle border instead of gold for a cleaner look */
+    --input: 30 16% 90%;
+    --ring: 44 69% 55%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Dark Theme - Your Green & Gold Palette (with corrected HSL syntax) */
+    --background: 157 12% 18%;
+    --foreground: 30 29% 97%;
+    --card: 164 80% 20%;
+    --card-foreground: 30 29% 97%;
+    --popover: 164 80% 20%;
+    --popover-foreground: 30 29% 97%;
+    --primary: 164 76% 23%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 44 69% 40%;
+    --secondary-foreground: 30 29% 97%;
+    --muted: 160 20% 53%;
+    --muted-foreground: 30 29% 97%;
+    --accent: 44 69% 40%;
+    --accent-foreground: 0 0% 10%;
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 164 76% 23%;
+    --input: 164 80% 20%;
+    --ring: 44 69% 40%;
+  }
+}
+.shimmer-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  transform: translateX(-100%);
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: transform 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.shimmer-container:hover::after {
+  transform: translateX(100%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans; /* Set default font to Lato */
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif; /* Set heading font to Playfair Display */
+  }
+}

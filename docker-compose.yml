@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  # mongo:
+  #   image: mongo:6
+  #   restart: always
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo-data:/data/db
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: 71762231013
+  #     MONGO_INITDB_ROOT_PASSWORD: Ranjanaa
+   
+
+  server:
+    build: ./server
+    restart: always
+    expose:
+      - "5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb+srv://simdevs25:Infinisk25@cluster0.7bl5jpv.mongodb.net/ShreeJewelPalace?retryWrites=true&w=majority&appName=Cluster0
+      - CLIENT_ORIGIN=https://192.168.29.164
+      - RAZORPAY_KEY_ID=rzp_test_QtnS8TbkLtokIo
+      - RAZORPAY_KEY_SECRET=lVenYqGGSu1Uf2nNEVLdiYyM
+      - JWT_SECRET=1c3f088fcb907de324fd6d200d661f58
+      - SESSION_SECRET=your-session-secret-key-here-minimum-32-chars
+      - APP_VERSION=1.0.0
+      # Add other secrets as needed
+    
+      
+    #volumes:3443
+    #mongodb://71762231013:Ranjanaa@mongo:27017/test?authSource=admin
+    #  - ./server:/server
+    #    docker exec -it <mongo_container_name> mongosh -u 71762231013 -p Ranjanaa --authenticationDatabase admin    docker exec -it <mongo_container_name> mongosh -u 71762231013 -p Ranjanaa --authenticationDatabase admin    docker exec -it <mongo_container_name> mongosh -u 71762231013 -p Ranjanaa --authenticationDatabase admin  - /server/node_modules
+    command: ["node", "server.js"]
+
+  client:
+    build: 
+      context: ./client
+      args:
+        VITE_API_BASE_URL: /api
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - server
+    #volumes:
+    #  - ./client:/client
+
+# volumes:
+#   mongo-data:
