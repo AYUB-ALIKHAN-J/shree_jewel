@@ -1,11 +1,18 @@
-  import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
   import {
     Link,
     useLocation,
     useNavigate,
     useSearchParams,
   } from "react-router-dom";
-  import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+  import { 
+    Sheet, 
+    SheetContent, 
+    SheetHeader, 
+    SheetTitle, 
+    SheetDescription, 
+    SheetTrigger 
+  } from "../ui/sheet";
   import { Button } from "../ui/button";
   import { useDispatch, useSelector } from "react-redux";
   import { shoppingViewHeaderMenuItems } from "@/config";
@@ -24,12 +31,15 @@
   import { fetchCartItems } from "@/store/shop/cart-slice";
   import { Label } from "../ui/label";
   import logo from "@/assets/logo.png";
+  import PropTypes from "prop-types";
 
+
+  // --- MODIFIED COMPONENT ---
   function ProductDropdown({ setOpen }) {
     const [categories, setCategories] = useState([]);
     const [open, setOpenState] = useState(false);
     const timeoutRef = useRef(null);
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Added useNavigate hook
 
     useEffect(() => {
       fetch("/api/common/categories")
@@ -53,12 +63,20 @@
       timeoutRef.current = setTimeout(() => setOpenState(false), 250);
     };
 
-    // Handle click: navigate and close dropdown (and Sheet if setOpen)
+    // Handle click on a category in the dropdown
     const handleCategoryClick = (category) => {
       setOpen && setOpen(false);
       setOpenState(false);
       navigate(`/shop/listing?category=${category.name}`);
     };
+    
+    // Handle click on the main "Products" link
+    const handleProductsLinkClick = () => {
+      setOpenState(false); // Close dropdown if open
+      navigate('/shop/listing'); // Navigate to the main listing page
+    };
+
+    const maxRowsPerColumn = 5;
 
     return (
       <div
@@ -66,13 +84,22 @@
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <span className="text-sm font-medium cursor-pointer">Products</span>
+        {/* Added onClick handler to the span */}
+        <span 
+          className="text-sm font-medium cursor-pointer"
+          onClick={handleProductsLinkClick}
+        >
+          Products
+        </span>
         {open && (
-          <div className="absolute left-0 bg-white text-black shadow-md mt-2 rounded-md z-50 min-w-[150px]">
+          <div
+            className="absolute left-0 bg-white text-black shadow-lg mt-2 rounded-md z-50 p-4 grid grid-flow-col auto-rows-min gap-x-8 gap-y-2"
+            style={{ gridTemplateRows: `repeat(${maxRowsPerColumn}, auto)` }}
+          >
             {categories.map((category) => (
               <div
                 key={category._id}
-                className="block px-4 py-2 hover:bg-gray-100 whitespace-nowrap cursor-pointer"
+                className="rounded-md px-3 py-2 hover:bg-gray-100 cursor-pointer whitespace-nowrap"
                 onClick={() => handleCategoryClick(category)}
               >
                 {category.name}
@@ -91,7 +118,6 @@
 
     function handleNavigate(getCurrentMenuItem) {
       sessionStorage.removeItem("filters");
-      // Use trimmed label for filter and URL (no plus replacement)
       const labelName = getCurrentMenuItem.label?.trim();
       const currentFilter =
         getCurrentMenuItem.id !== "home" &&
@@ -110,6 +136,12 @@
         if (setOpen) setOpen(false);
         return;
       }
+      
+      if (getCurrentMenuItem.id === "products") {
+        navigate('/shop/listing');
+        if (setOpen) setOpen(false);
+        return;
+      }
 
       if (location.pathname.includes("listing") && currentFilter !== null) {
         setSearchParams(
@@ -125,8 +157,21 @@
       <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
         {shoppingViewHeaderMenuItems.map((menuItem) => {
           if (menuItem.id === "products") {
-            return <ProductDropdown key={menuItem.id} setOpen={setOpen} />;
+            if (setOpen) {
+              return (
+                 <Label
+                  onClick={() => handleNavigate(menuItem)}
+                  className="text-sm font-medium cursor-pointer"
+                  key={menuItem.id}
+                >
+                  {menuItem.label}
+                </Label>
+              )
+            } else {
+              return <ProductDropdown key={menuItem.id} setOpen={setOpen} />;
+            }
           }
+
           if (menuItem.icon) {
             const Icon = menuItem.icon;
             return (
@@ -151,14 +196,6 @@
             </Label>
           );
         })}
-        {/* Add About Us menu item 
-        <Label
-          onClick={() => handleNavigate({ id: "about" })}
-          className="text-sm font-medium cursor-pointer"
-          key="about"
-        >
-          About Us
-        </Label>*/}
       </nav>
     );
   }
@@ -188,8 +225,6 @@
       }
     }, [dispatch, isAuthenticated, user?.id]);
 
-    //console.log(cartItems, "sangam");
-
     return (
       <div className="flex lg:items-center lg:flex-row flex-col gap-4">
         {isAuthenticated ? (
@@ -215,7 +250,7 @@
                     : []
                 }
                 onCheckout={() => {
-                  if (setOpen) setOpen(false); // Only close navbar on checkout
+                  if (setOpen) setOpen(false);
                 }}
               />
             </Sheet>
@@ -274,7 +309,6 @@
     const { isAuthenticated } = useSelector((state) => state.auth);
     const [openSheet, setOpenSheet] = useState(false);
     const location = useLocation();
-    // Remove previous isProductDetails and isMobile logic for now
 
     return (
       <header className="fixed top-0 left-0 w-full z-50 bg-background shadow border-b">
@@ -283,12 +317,10 @@
             to="/shop/home"
             className="flex items-center gap-2"
             onClick={e => {
-              // Always scroll to top on Home click
               window.dispatchEvent(new CustomEvent("shopping-home-scroll", { detail: "home-scroll-up" }));
               }}
             >
               <img src={logo} alt="Logo" className="h-12 w-12 object-contain" />
-              {/*<span className="font-bold">Pradhikshaa Silks</span>*/}
           </Link>
           <Sheet open={openSheet} onOpenChange={setOpenSheet}>
             <SheetTrigger asChild>
@@ -298,8 +330,16 @@
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-xs">
-              <MenuItems setOpen={setOpenSheet} />
-              <HeaderRightContent setOpen={setOpenSheet} />
+              <SheetHeader>
+                <SheetTitle className="sr-only">Main Menu</SheetTitle>
+                <SheetDescription className="sr-only">
+                  Main navigation menu for the website, including product categories, account access, and cart.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-4">
+                <MenuItems setOpen={setOpenSheet} />
+                <HeaderRightContent setOpen={setOpenSheet} />
+              </div>
             </SheetContent>
           </Sheet>
           <div className="hidden lg:block">
@@ -315,8 +355,7 @@
 
   export default ShoppingHeader;
 
-  // Update prop types
-  import PropTypes from "prop-types";
+  // Prop types definitions
   MenuItems.propTypes = {
     setOpen: PropTypes.func,
   };

@@ -6,17 +6,17 @@ class InvoiceGenerator {
   constructor() {
     this.doc = new PDFDocument({
       size: 'A4',
-      margin: 50
+      margin: 30
     });
   }
 
   generateInvoice(orderData, userData) {
     const doc = this.doc;
     
-    // Add watermark first (so it appears behind everything)
+    // Add watermark as background (so it appears behind everything)
     this.addWatermark();
     
-    // Add company header with logo
+    // Add company header
     this.addHeader();
     
     // Add invoice details
@@ -62,26 +62,21 @@ class InvoiceGenerator {
     
     if (logoPath) {
       try {
-        // Add logo as watermark - centered and rotated
         doc.save();
+
+        const imageWidth = 100;
+        const imageHeight = 150;
+
         doc.translate(pageWidth / 2, pageHeight / 2);
-        //doc.rotate(-45);
-        
-        // Add logo with transparency effect - centered and smaller size
-        doc.image(logoPath, -50, -50, { 
-          width: 100, 
-          height: 100,
-          fit: [100, 100],
-          align: 'center'
+        doc.opacity(0.30);
+        doc.rotate(0);
+        // Add logo with transparency effect - centered
+        doc.image(logoPath, -imageWidth / 2, -imageHeight / 2, { 
+          width: imageWidth, 
+          height: imageHeight,
+          align: 'center',
         });
         
-        // Add a light overlay to reduce opacity and make it more watermark-like
-        doc.rect(-50, -50, 100, 100)
-           .fillColor('rgba(255, 255, 255, 0.6)')
-           .fill();
-        
-        doc.restore();
-        console.log('Logo watermark added successfully');
       } catch (imageError) {
         console.log('Error adding logo watermark:', imageError.message);
         // Fallback to text watermark if image fails
@@ -90,7 +85,7 @@ class InvoiceGenerator {
            .fillColor('#D3D3D3')
            .rotate(-45, { origin: [pageWidth / 2, pageHeight / 2] });
         
-        doc.text('PRADHIKSHAA  SILKS', pageWidth / 2 - 200, pageHeight / 2 - 35);
+        doc.text('Shree Jewel Palace', pageWidth / 2 - 200, pageHeight / 2 - 35);
       }
     } else {
       // Fallback to text watermark if logo not found
@@ -100,7 +95,7 @@ class InvoiceGenerator {
          .fillColor('#D3D3D3')
          .rotate(-45, { origin: [pageWidth / 2, pageHeight / 2] });
       
-      doc.text('PRADHIKSHAA  SILKS', pageWidth / 2 - 200, pageHeight / 2 - 35);
+      doc.text('Shree Jewel Palace', pageWidth / 2 - 200, pageHeight / 2 - 35);
     }
     
     // Restore state
@@ -114,7 +109,7 @@ class InvoiceGenerator {
     doc.fontSize(24)
        .font('Helvetica-Bold')
        .fillColor('#1f2937')
-       .text('Pradhikshaa Silks', 50, 60);
+       .text('Shree Jewel Palace', 50, 60);
     
     doc.fontSize(12)
        .font('Helvetica')
@@ -123,8 +118,8 @@ class InvoiceGenerator {
     
     // Contact information
     doc.fontSize(10)
-       .text('Email: pradhikshaasilks@gmail.com', 50, 110)
-       .text('Phone: +91 99948 19203', 50, 125);
+       .text('Email: Shreejewelpalace1983@gmail.com', 50, 110)
+       .text('Phone: +91 99943 65510', 50, 125);
     
     // Add a line separator
     doc.moveTo(50, 150)
@@ -243,8 +238,8 @@ class InvoiceGenerator {
          .fillColor('#374151')
          .text(item.title, 50, currentY, { width: 240 })
          .text(item.quantity.toString(), 300, currentY)
-         .text(`₹${item.price}`, 400, currentY)
-         .text(`₹${(item.price * item.quantity).toFixed(2)}`, 500, currentY);
+         .text(`Rs. ${item.price}`, 400, currentY)
+         .text(`Rs. ${(item.price * item.quantity).toFixed(2)}`, 500, currentY);
       
       currentY += 20;
     });
@@ -267,17 +262,17 @@ class InvoiceGenerator {
     
     doc.text('Subtotal:', 400, startY)
        .font('Helvetica-Bold')
-       .text(`₹${orderData.subtotal.toFixed(2)}`, 500, startY);
+       .text(`Rs.${orderData.subtotal.toFixed(2)}`, 500, startY);
     
     doc.font('Helvetica')
        .text('Tax:', 400, startY + 15)
        .font('Helvetica-Bold')
-       .text(`₹${orderData.taxAmount.toFixed(2)}`, 500, startY + 15);
+       .text(`Rs.${orderData.taxAmount.toFixed(2)}`, 500, startY + 15);
     
     doc.font('Helvetica')
        .text('Shipping:', 400, startY + 30)
        .font('Helvetica-Bold')
-       .text(`₹${orderData.shippingCharges.toFixed(2)}`, 500, startY + 30);
+       .text(`Rs.${orderData.shippingCharges.toFixed(2)}`, 500, startY + 30);
     
     // Total line
     doc.moveTo(400, startY + 45)
@@ -289,7 +284,7 @@ class InvoiceGenerator {
        .font('Helvetica-Bold')
        .fillColor('#1f2937')
        .text('Total:', 400, startY + 55)
-       .text(`₹${orderData.totalAmount.toFixed(2)}`, 500, startY + 55);
+       .text(`Rs.${orderData.totalAmount.toFixed(2)}`, 500, startY + 55);
   }
 
   addFooter(orderData) {
@@ -299,7 +294,7 @@ class InvoiceGenerator {
        .font('Helvetica')
        .fillColor('#6b7280')
        .text('Thank you for your purchase!', 50, 750)
-       .text('For any queries, please contact us at pradhikshaasilks@gmail.com', 50, 765)
+       .text('For any queries, please contact us at Shreejewelpalace1983@gmail.com', 50, 765)
        .text('This is a computer generated invoice.', 50, 780)
        .text(`Full Invoice ID: ${orderData?._id?.toString() || 'N/A'}`, 50, 795);
   }

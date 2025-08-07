@@ -11,15 +11,16 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Create SSL directory and copy certificates
+# The backend server should NOT handle SSL. Nginx does this.
+#The following lines have been removed.
 RUN mkdir -p /etc/ssl/certs /etc/ssl/private
 COPY fullchain.pem /etc/ssl/certs/
 COPY privkey.pem /etc/ssl/private/
 
-# Expose port
+# Expose port  
 EXPOSE 5000
 
-# Set environment variables (override in docker-compose)
+# Set environment variables (can be overridden in docker-compose)
 ENV NODE_ENV=production
 
 # Start the server

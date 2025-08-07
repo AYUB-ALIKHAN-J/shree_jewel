@@ -1,7 +1,10 @@
 import { Search } from "lucide-react";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 // API Configuration
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://127.0.0.1:5000';
+// export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '139.59.34.72';
+console.log(API_BASE_URL);
+
 
 export const registerFormControls = [
   {
@@ -53,10 +56,34 @@ export const addProductFormElements = [
     placeholder: "Enter product title",
   },
   {
-    label: "Description",
-    name: "description",
+    label: "Material",
+    name: "material",
     componentType: "textarea",
-    placeholder: "Enter product description",
+    placeholder: "Enter product material details",
+  },
+  {
+    label: "Design",
+    name: "design",
+    componentType: "textarea",
+    placeholder: "Enter product design details",
+  },
+  {
+    label: "Motif",
+    name: "motif",
+    componentType: "textarea",
+    placeholder: "Enter product motif details",
+  },
+  {
+    label: "Craftsmanship",
+    name: "craftsmanship",
+    componentType: "textarea",
+    placeholder: "Enter product craftsmanship details",
+  },
+  {
+    label: "Wearability",
+    name: "wearability",
+    componentType: "textarea",
+    placeholder: "Enter product wearability details",
   },
   {
     label: "Category",

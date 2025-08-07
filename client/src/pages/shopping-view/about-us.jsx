@@ -20,48 +20,41 @@ gsap.registerPlugin(ScrollTrigger);
 
 // === NEW: Rewritten and re-imaged for Shree Jewell Palace ===
 const collectionsData = [
-    {
-        src: "https://images.pexels.com/photos/12833532/pexels-photo-12833532.jpeg",
-        alt: "An exquisite antique gold necklace with intricate details.",
-        title: "Exquisite Necklaces",
-        description: "Adorn your neckline with our stunning collection, featuring timeless antique heirlooms, modern rose gold masterpieces, and brilliantly polished rhodium-finished designs for every occasion.",
-    },
-    {
-        src: "https://images.pexels.com/photos/2735970/pexels-photo-2735970.jpeg",
-        alt: "Elegant rose gold and diamond earrings on a soft surface.",
-        title: "Elegant Earrings",
-        description: "From classic silver studs to intricate antique jhumkas and contemporary rose gold drops, our earrings are crafted to perfection, adding a touch of grace to any ensemble.",
-    },
-    {
-        src: "https://images.pexels.com/photos/1579240/pexels-photo-1579240.jpeg",
-        alt: "A collection of ornate gold and silver bangles.",
-        title: "Bangles & Bracelets",
-        description: "Discover a world of wristwear, including lustrous gold-polished bangles, sleek silver kadas, and elegant bracelets for both men and women, each piece a symbol of style.",
-    },
-    {
-        src: "https://images.pexels.com/photos/9428522/pexels-photo-9428522.jpeg",
-        alt: "A stunning Turkish-style ring with a large gemstone.",
-        title: "Captivating Rings",
-        description: "Explore our diverse range of rings, from unique Turkish designs to classic silver bands and romantic rose gold settings, available in styles for both men and women.",
-    },
-    {
-        src: "https://images.pexels.com/photos/1035693/pexels-photo-1035693.jpeg",
-        alt: "A bride adorned with a beautiful Maang Tikka.",
-        title: "Bridal & Festive Wear",
-        description: "Complete your traditional look with our breathtaking Maang Tikkas and delicate Toe Rings. Available in antique, rose gold, and rhodium finishes to perfectly match your bridal attire.",
-    },
-    {
-        src: "https://images.pexels.com/photos/160839/panchala-sculpture-detail-idol-god-160839.jpeg",
-        alt: "A masterfully crafted bronze idol of a deity.",
-        title: "Idols & Divine Articles",
-        description: "Bring home a touch of divinity with our masterfully crafted idols and statues. Our collection of articles and domes are perfect for creating a sacred space in your home.",
-    },
-    {
-        src: "https://images.pexels.com/photos/716107/pexels-photo-716107.jpeg",
-        alt: "Precious gemstones of various colors and cuts.",
-        title: "Precious Gemstones",
-        description: "Discover the natural beauty and power of our curated gemstone collection. Each stone is hand-selected for its exceptional quality, color, and character.",
-    },
+  {
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1754120695/necklace_n32zjp.webp",
+    alt: "Necklace",
+    title: "The Timeless Strand",
+    description: "A celebration of timeless elegance. Our necklaces are meticulously crafted to capture and reflect light, designed to be the graceful centerpiece of any look.",
+    collectionId: "Necklace"
+  },
+  {
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1754120587/ring_hqh1fe.webp",
+    alt: "Ring",
+    title: "The Emblem of Adornment",
+    description: "More than just a ring, it's a statement. Our collection embodies masterful design and exquisite craftsmanship, made to be cherished for a lifetime.",
+    collectionId: "Ring"
+  },
+  {
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1754120587/bangles_jrlr01.webp",
+    alt: "Bangles",
+    title: "The Art of the Wrist",
+    description: "Adorn your wrist with sculptural beauty. Our bangles are a celebration of bold, graceful lines, perfect for stacking or shining as a singular statement.",
+    collectionId: "Bangles"
+  },
+  {
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1754120587/bracelet_lziolo.webp",
+    alt: "Bracelet",
+    title: "The Signature Link",
+    description: "Elevate every gesture with a touch of luxury. From delicate chains to powerful cuffs, each bracelet is a perfect blend of modern allure and classic charm.",
+    collectionId: "Bracelet"
+  },
+  {
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1754120587/earings_wf9xar.jpg",
+    alt: "Earrings",
+    title: "The Luster of Light",
+    description: "Frame your features with brilliance. Our earrings are designed to capture every glance, illuminating your natural radiance with every style from subtle studs to dramatic drops.",
+    collectionId: "Earrings"
+  }
 ];
 
 const whyChooseUsData = [
@@ -207,25 +200,29 @@ function AboutUs() {
             <p className="text-xl text-muted-foreground">Transparent, Fair, and Customer-Focused.</p>
           </div>
           <Accordion type="single" collapsible className="w-full animate-on-scroll">
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="text-xl font-serif">Return Policy</AccordionTrigger>
-              <AccordionContent className="pt-4 text-muted-foreground leading-relaxed space-y-4">
-                <p>Returns are accepted only if notified within 24 hours of delivery for damaged, defective, or incorrect items.</p>
-                <p><strong>Process:</strong> Notify us via email/WhatsApp with an unedited unboxing video. Once approved, ship the item back within 3 days. Sale items are not eligible for return.</p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger className="text-xl font-serif">Exchange Policy</AccordionTrigger>
-              <AccordionContent className="pt-4 text-muted-foreground leading-relaxed">
-                Exchanges are available for defective or damaged items only, following the same 24-hour notification process as returns. The customer is responsible for shipping costs.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
+          <AccordionItem value="item-1">
+  <AccordionTrigger className="text-xl font-serif">Return Policy</AccordionTrigger>
+  <AccordionContent className="pt-4 text-muted-foreground leading-relaxed space-y-4">
+    <p>Returns are accepted within 7 days of delivery for damaged items during transit or wrong products received. Items must be unused, in original packaging with all tags intact.</p>
+    <p><strong>Process:</strong> Email at <a href="mailto:Shreejewelpalace1983@gmail.com" className="text-primary hover:underline">Shreejewelpalace1983@gmail.com</a> or WhatsApp : <strong className="text-stone-700">+91 99943 65510</strong>  with clear photographs and product description. Once approved, ship using any reliable courier with tracking. Personalized/custom jewelry and items with minor color variations are not eligible for return.</p>
+    <p><strong>Shipping:</strong> We cover shipping costs for damaged/wrong items. Customer pays for other returns. Processing takes 7-15 business days.</p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-2">
+  <AccordionTrigger className="text-xl font-serif">Exchange Policy</AccordionTrigger>
+  <AccordionContent className="pt-4 text-muted-foreground leading-relaxed">
+    <p>Exchanges are available within 7 days of delivery for damaged items during transit or wrong products received. Items must be unused, in original packaging with all tags intact. Same notification process as returns - contact via email or WhatsApp with photographs.</p>
+    <p><strong>Important:</strong> Exchanges subject to product availability. If unavailable, store credit or refund offered. We cover shipping for damaged/wrong items; customer pays for other exchanges. Processing takes 7-15 business days.</p>
+  </AccordionContent>
+</AccordionItem>
+
+            {/* <AccordionItem value="item-3">
               <AccordionTrigger className="text-xl font-serif">Cancellation Policy</AccordionTrigger>
               <AccordionContent className="pt-4 text-muted-foreground leading-relaxed">
                 Orders can be fully cancelled before they are shipped. Once an item has been shipped, cancellation is not possible. Please contact us immediately if you wish to cancel.
               </AccordionContent>
-            </AccordionItem>
+            </AccordionItem> */}
           </Accordion>
         </div>
       </section>
@@ -234,14 +231,15 @@ function AboutUs() {
         <div className="max-w-4xl mx-auto text-center animate-on-scroll">
             <h2 className="text-4xl md:text-5xl font-serif mb-8">Connect With Us</h2>
             <div className="flex justify-center items-center gap-8">
-                <a href="https://instagram.com/pradhikshaasilks" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 group">
+                <a href="https://www.instagram.com/shreejewelpalace.in?igsh=MTlqcDRxdDA5ZHlzeg==" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 group">
                     <img src={instaLogo} alt="Instagram" className="w-12 h-12 object-contain group-hover:scale-110 transition-transform"/>
                     <span className="text-muted-foreground group-hover:text-primary">@shreejewellpalace</span>
                 </a>
-                <a href="https://wa.me/+919994819203" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 group">
-                    <img src={whatsappLogo} alt="WhatsApp" className="w-12 h-12 p-2 object-contain group-hover:scale-110 transition-transform"/>
-                    <span className="text-muted-foreground group-hover:text-primary">+91 99948 19203</span>
-                </a>
+                <a href="https://wa.me/919994365510" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 group">
+    <img src={whatsappLogo} alt="WhatsApp" className="w-12 h-12 p-2 object-contain group-hover:scale-110 transition-transform"/>
+    <span className="text-muted-foreground group-hover:text-primary">+91 99943 65510</span>
+</a>
+
             </div>
         </div>
       </section>

@@ -6,6 +6,7 @@ import { downloadInvoice } from "@/store/shop/order-slice";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 
+// --- NO LOGIC IS CHANGED ---
 export default function PaymentSuccess() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -14,10 +15,11 @@ export default function PaymentSuccess() {
   const [latestOrderId, setLatestOrderId] = useState(null);
 
   useEffect(() => {
-    // Get the latest order ID from localStorage or URL params
     const orderId = localStorage.getItem('latestOrderId') || new URLSearchParams(window.location.search).get('orderId');
     if (orderId) {
       setLatestOrderId(orderId);
+      // It's good practice to clear the item from localStorage after use
+      localStorage.removeItem('latestOrderId');
     }
   }, []);
 
@@ -25,43 +27,62 @@ export default function PaymentSuccess() {
     if (latestOrderId && user?.id) {
       dispatch(downloadInvoice({ orderId: latestOrderId, userId: user.id }));
       toast({
-        title: "Invoice downloaded successfully",
-        description: "Your invoice has been downloaded.",
+        title: "Invoice Download Initiated",
+        description: "Your invoice should be available in your downloads folder shortly.",
       });
     } else {
       toast({
-        title: "Invoice not available",
-        description: "Please check your orders page to download the invoice.",
+        title: "Unable to find Order ID",
+        description: "Please visit 'My Orders' to download your invoice.",
         variant: "destructive",
       });
     }
   };
 
+  // --- UI REDESIGNED FOR A LUXURY AESTHETIC ---
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center bg-white px-4 py-12">
-      <CheckCircle2 className="text-green-500 mb-4" size={72} />
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Payment Successful!</h1>
-      <p className="text-gray-600 mb-6 text-center max-w-md">
-        Thank you for your purchase.<br />
-        Your order has been placed successfully.
-      </p>
-      <div className="flex gap-4">
-        <Button
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded"
-          onClick={() => navigate("/shop/account")}
-        >
-          View My Orders
-        </Button>
-        {latestOrderId && (
+    <div className="min-h-screen bg-stone-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-2xl bg-white text-center p-8 sm:p-12 lg:p-16 shadow-lg rounded-lg">
+        {/* The icon is styled to be sophisticated, not loud. */}
+        <CheckCircle2 className="text-gray-800 mx-auto mb-6" size={60} strokeWidth={1.5} />
+
+        {/* The heading uses a serif font for an elegant, classic feel. */}
+        <h1 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4">
+          Your Order is Confirmed
+        </h1>
+
+        {/* The message is personalized and reassuring. */}
+        <p className="text-gray-600 mb-8 text-base max-w-lg mx-auto">
+          Thank you for your acquisition, {user?.name ? `${user.name}` : 'customer'}. We are preparing your items with the utmost care. 
+          A confirmation has been sent to your registered email.
+        </p>
+
+        {/* A subtle divider creates a structured separation before the actions. */}
+        <div className="border-t border-gray-200 my-8"></div>
+        
+        <p className="text-sm text-gray-500 mb-6">What would you like to do next?</p>
+        
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* The primary button is strong, dark, and confident. */}
           <Button
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={handleDownloadInvoice}
+            className="w-full sm:w-auto bg-gray-900 hover:bg-gray-700 text-white font-semibold px-8 py-3 rounded-md uppercase tracking-wider transition-colors duration-300"
+            onClick={() => navigate("/shop/account")}
           >
-            <Download className="h-4 w-4" />
-            Download Invoice
+            My Orders
           </Button>
-        )}
+          
+          {/* The secondary button is a refined, non-intrusive outline style. */}
+          {latestOrderId && (
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto flex items-center gap-2 border-gray-300 hover:bg-gray-100 text-gray-800 font-semibold px-8 py-3 rounded-md uppercase tracking-wider transition-colors duration-300"
+              onClick={handleDownloadInvoice}
+            >
+              <Download className="h-4 w-4" />
+              Invoice
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

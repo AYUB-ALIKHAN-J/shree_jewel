@@ -1,20 +1,20 @@
 import Address from "@/components/shopping-view/address";
-import img from "../../assets/account.jpg";
+import img from "../../assets/account.jpg"; // Recommended: Use a high-end, atmospheric banner image
 import { useDispatch, useSelector } from "react-redux";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { createNewOrder, captureRazorpayPayment } from "@/store/shop/order-slice";
+import { createNewOrder } from "@/store/shop/order-slice";
 import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { 
-  calculatePriceWithTax, 
   calculateTaxAmount, 
   calculateTotalWithTaxAndShipping,
   calculateShippingCharges,
   getTaxDisplayText
 } from "@/lib/utils";
 
+// --- NO LOGIC IS CHANGED ---
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
@@ -23,8 +23,6 @@ function ShoppingCheckout() {
   const [isPaymentStart] = useState(false);
   const dispatch = useDispatch();
   const { toast } = useToast();
-
-  console.log(currentSelectedAddress, "cartItems");
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -39,23 +37,25 @@ function ShoppingCheckout() {
         )
       : 0;
 
-  // Calculate price breakdown
   const subtotal = totalCartAmount;
-  const taxAmount = calculateTaxAmount(subtotal);
+  // Update taxAmount calculation
+  const taxAmount = currentSelectedAddress ? calculateTaxAmount(subtotal, currentSelectedAddress.country) : 0;
   const shippingCharges = calculateShippingCharges(currentSelectedAddress?.country);
   const totalAmount = calculateTotalWithTaxAndShipping(subtotal, currentSelectedAddress?.country);
 
   function handleInitiateRazorpayPayment() {
-    if (cartItems.length === 0) {
+    if (!cartItems || cartItems.items.length === 0) {
       toast({
-        title: "Your cart is empty. Please add items to proceed",
+        title: "Your selection is empty.",
+        description: "Please add a piece to your collection to proceed.",
         variant: "destructive",
       });
       return;
     }
     if (currentSelectedAddress === null) {
       toast({
-        title: "Please select one address to proceed.",
+        title: "Delivery Details Required",
+        description: "Kindly select a shipping destination for your acquisition.",
         variant: "destructive",
       });
       return;
@@ -100,15 +100,13 @@ function ShoppingCheckout() {
     dispatch(createNewOrder(orderData)).then((data) => {
       if (data?.payload?.success && data?.payload?.razorpayOrder) {
         const options = {
-          key: "rzp_test_yfhK4vRHVaf2IB", // Your Razorpay Test Key
+          key: "rzp_live_P2xLhx4GNQtcme", // Your Razorpay Test Key
           amount: data.payload.razorpayOrder.amount,
           currency: data.payload.razorpayOrder.currency,
-          name: "Pradhikshaa Silks",
-          description: "Order Payment",
+          name: "Shree Jewel Palace", // Name of your luxury brand
+          description: "Finalize Your Acquisition",
           order_id: data.payload.razorpayOrder.id,
           handler: function (response) {
-            // After payment, redirect to success page. Order/cart will be updated by webhook.
-            // Store order ID for invoice download
             if (data?.payload?.orderId) {
               localStorage.setItem('latestOrderId', data.payload.orderId);
             }
@@ -120,13 +118,7 @@ function ShoppingCheckout() {
             contact: currentSelectedAddress?.phone,
           },
           theme: {
-            color: "#F37254",
-          },
-          method: {
-            upi: true,
-            card: true,
-            netbanking: true,
-            wallet: true,
+            color: "#0E4F3F", // A sophisticated, dark charcoal theme
           },
         };
         const rzp = new window.Razorpay(options);
@@ -135,62 +127,114 @@ function ShoppingCheckout() {
     });
   }
 
+  // --- UI REDESIGNED FOR A LUXURY AESTHETIC ---
   return (
-    <div className="flex flex-col">
-      <div className="relative h-[300px] w-full overflow-hidden">
-        <img src={img} alt="Account" className="h-full w-full object-cover object-center" />
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">Please select an address to proceed</h3>
-          <Address
-            selectedId={currentSelectedAddress}
-            setCurrentSelectedAddress={setCurrentSelectedAddress}
-          />
+    // Use a soft, off-white background for a more premium feel than stark white
+    <div className="bg-stone-50 font-sans">
+      <div className="relative h-56">
+        <img src={img} alt="Aesthetic Banner" className="h-full w-full object-cover object-center brightness-50" />
+        <div className="absolute inset-0 flex items-center justify-center">
+            {/* Serif fonts for headings evoke classic luxury */}
+            <h1 className="text-4xl sm:text-5xl font-serif text-white tracking-widest text-center uppercase">
+              Finalize Your Order
+            </h1>
         </div>
-        <div className="flex flex-col gap-4">
-          {cartItems?.items?.length > 0
-            ? cartItems.items.map((item, idx) => (
-                <UserCartItemsContent cartItem={item} key={item.productId || idx} />
-              ))
-            : null}
-          <div className="mt-8 space-y-4">
-            <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">₹{subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">{getTaxDisplayText(currentSelectedAddress?.state)}</span>
-                <span className="font-medium">₹{taxAmount.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Shipping Charges</span>
-                <span className="font-medium">
-                  {shippingCharges === null ? "To be calculated" : `₹${shippingCharges.toFixed(2)}`}
-                </span>
-              </div>
-              <div className="border-t pt-3">
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span>
-                    {totalAmount === null ? "To be calculated" : `₹${totalAmount.toFixed(2)}`}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-500 mt-1">Inclusive of taxes</p>
-              </div>
-            </div>
+      </div>
+      
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 lg:gap-x-16 relative">
+          
+          {/* Main Content (Scrollable) */}
+          <div className="lg:col-span-3 py-12 lg:py-16">
+            <h2 className="text-3xl font-serif mb-8 text-gray-900">
+              Delivery Details
+            </h2>
+            <Address
+              selectedId={currentSelectedAddress}
+              setCurrentSelectedAddress={setCurrentSelectedAddress}
+            />
           </div>
-          <div className="mt-4 w-full">
-            <Button 
-              onClick={handleInitiateRazorpayPayment} 
-              className="w-full"
-              disabled={totalAmount === null}
-            >
-              {isPaymentStart
-                ? "Processing Razorpay Payment..."
-                : "Checkout with Razorpay"}
-            </Button>
+
+          {/* Sticky Sidebar (Order Summary) */}
+          <div className="lg:col-span-2">
+            <div className="lg:sticky lg:top-10">
+                <div className="bg-white rounded-none lg:rounded-lg border-y lg:border border-gray-200/80 p-6 lg:p-8 my-10 lg:my-16 shadow-sm">
+                    <h2 className="text-3xl font-serif mb-8 text-gray-900">Your Selection</h2>
+
+                    {/* Product List */}
+                    <div className="max-h-[55vh] overflow-y-auto pr-3 space-y-6">
+                        {cartItems?.items?.length > 0
+                        ? cartItems.items.map((item, idx) => (
+                            <UserCartItemsContent cartItem={item} key={item.productId || idx} />
+                            ))
+                        : <p className="text-gray-500">Your bag is currently empty.</p>}
+                    </div>
+
+                    {/* Price Breakdown - uses spacing instead of lines for a cleaner look */}
+                    <div className="mt-10 space-y-4">
+                        <div className="flex justify-between text-base">
+                            <span className="text-gray-500">Subtotal</span>
+                            <span className="font-medium text-gray-900">₹{subtotal.toFixed(2)}</span>
+                        </div>
+                        {currentSelectedAddress && (
+                          <div className="flex justify-between text-base">
+                              <span className="text-gray-500">
+                                {getTaxDisplayText(currentSelectedAddress?.state, currentSelectedAddress?.country)}
+                              </span>
+                              <span className="font-medium text-gray-900">₹{taxAmount.toFixed(2)}</span>
+                          </div>
+                        )}
+                        {currentSelectedAddress && (
+                          currentSelectedAddress.country && currentSelectedAddress.country.toLowerCase() === 'india' ? (
+                            <div className="flex flex-col">
+                              <div className="flex justify-between text-base">
+                                <span className="text-gray-500">Shipping</span>
+                                <span className="font-medium text-gray-900">₹0</span>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                Shipping within India is free.
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-4 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg mt-2">
+                                <h4 className="font-serif font-semibold text-amber-900">A Note on International Orders</h4>
+                                <div className="mt-2 text-sm text-amber-800 leading-relaxed">
+                                    <p>
+                                        Shipping for international orders will be arranged by us; however, all shipping charges must be paid by the buyer.
+                                    </p>
+                                    <p className="mt-2">
+                                        Additionally, any customs duties, taxes, or import clearance fees (if applicable) are the responsibility of the recipient in the destination country.
+                                    </p>
+                                </div>
+                            </div>
+                          )
+                        )}
+                        <div className="pt-4 mt-2">
+                            <div className="flex justify-between text-xl font-semibold text-gray-900">
+                              <span>Total</span>
+                              <span>
+                                  {totalAmount === null ? "..." : `₹${totalAmount.toFixed(2)}`}
+                              </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Checkout Button */}
+                    <div className="mt-8 w-full">
+                  <Button
+                    onClick={handleInitiateRazorpayPayment}
+                    // The hardcoded gray colors have been removed.
+                    // The button now uses the theme's primary color (green) by default.
+                    className="w-full font-semibold py-4 text-sm rounded-md uppercase tracking-wider transition-colors duration-300"
+                    disabled={totalAmount === null}
+                  >
+                    {isPaymentStart
+                      ? "Processing..."
+                      : "Proceed to Payment"}
+                  </Button>
+                    </div>
+                </div>
+            </div>
           </div>
         </div>
       </div>

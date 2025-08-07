@@ -6,9 +6,9 @@ export function cn(...inputs) {
 }
 
 // Tax and shipping constants
-export const TAX_RATE = 0.05; // 5% tax
+export const TAX_RATE = 0.03; // 5% tax
 export const SHIPPING_CHARGES_INDIA = 0; // Free shipping for India
-export const SHIPPING_CHARGES_INTERNATIONAL = 3000; // Rs 3000 for other countries
+export const SHIPPING_CHARGES_INTERNATIONAL = 0; // Rs 3000 for other countries
 
 // Calculate shipping charges based on country
 export function calculateShippingCharges(country) {
@@ -22,13 +22,13 @@ export function calculatePriceWithTax(price) {
 }
 
 // Calculate tax amount
-export function calculateTaxAmount(price) {
+export function calculateTaxAmount(price, country) {
   return price * TAX_RATE;
 }
 
 // Calculate total with tax and shipping
 export function calculateTotalWithTaxAndShipping(subtotal, country) {
-  const taxAmount = calculateTaxAmount(subtotal);
+  const taxAmount = calculateTaxAmount(subtotal, country);
   const shippingCharges = calculateShippingCharges(country);
   
   if (shippingCharges === null) {
@@ -49,11 +49,18 @@ export function formatPriceWithTax(price) {
   };
 }
 
-// Get tax display text based on state
-export function getTaxDisplayText(state) {
-  if (state && state.toLowerCase() === 'tamilnadu') {
-    return "Tax 5% (GST: SGST:2.5% + CGST:2.5%)";
-  } else {
-    return "Tax 5% (IGST)";
+// Get tax display text based on state and country
+export function getTaxDisplayText(state, country) {
+  if (!country) return '';
+  if (country.toLowerCase() !== 'india') return 'Tax 3% (IGST)';
+  if (state) {
+    const stateLower = state.toLowerCase().trim();
+    
+    // Check for various possible Tamil Nadu variations
+    if (stateLower.includes('tamil') && stateLower.includes('nadu')) {
+      return "Tax 3% (GST: SGST:1.5% + CGST:1.5%)";
+    }
   }
+  
+  return "Tax 3% (IGST)";
 }

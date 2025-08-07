@@ -14,7 +14,7 @@ function AuthLayout() {
       <div className="flex flex-col items-center w-full max-w-md z-10">
         <img
           src={logo}
-          alt="Pradhikshaa Silks Logo"
+          alt="Shree Jewel Palace Logo"
           className="mb-6 w-20 h-20 object-contain drop-shadow-xl animate-bounce-slow"
         />
         <div className="w-full">

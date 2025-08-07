@@ -49,6 +49,11 @@ function CommonForm({
         </Select>
       );
     } else if (getControlItem.name === "subcategory") {
+      // Only show subcategory if a category is selected
+      if (!formData.category) {
+        return null;
+      }
+      
       element = (
         <Select
           onValueChange={(value) =>
@@ -58,7 +63,6 @@ function CommonForm({
             })
           }
           value={formData.subcategory || ""}
-          disabled={!formData.category}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Subcategory" />

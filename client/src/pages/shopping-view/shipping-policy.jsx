@@ -6,86 +6,46 @@ function ShippingPolicy() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Content below navbar */}
-      <div className="container mx-auto px-4 py-8 max-w-4xl pt-28">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Shipping Policy</h1>
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <div className="prose prose-lg max-w-none">
-            <p className="text-gray-700 mb-8">
-              We aim to provide reliable and timely delivery. Please review our shipping timelines and restrictions before placing your order.
-            </p>
+    <div className="min-h-screen bg-stone-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-4xl pt-28 sm:pt-32">
+        <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6 text-stone-600 hover:text-stone-900">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
+        
+        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-stone-900 mb-2">Shipping Policy</h1>
+        <p className="text-stone-500 mb-10">Last Updated: August 1, 2025</p>
 
-            <section className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Shipping Timeline</h2>
-              <div className="overflow-x-auto mb-6">
-                <table className="w-full border-collapse border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-300 px-4 py-2 text-left">Order Type</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left">Processing Time</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left">Shipping Time</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left">Estimated Delivery Deadline</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border border-gray-300 px-4 py-2 font-medium">Domestic (India)</td>
-                      <td className="border border-gray-300 px-4 py-2">1-2 business days</td>
-                      <td className="border border-gray-300 px-4 py-2">2-7 business days*</td>
-                      <td className="border border-gray-300 px-4 py-2">3-9 business days</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-300 px-4 py-2 font-medium">International</td>
-                      <td className="border border-gray-300 px-4 py-2">2-4 business days</td>
-                      <td className="border border-gray-300 px-4 py-2">7-21 business days*</td>
-                      <td className="border border-gray-300 px-4 py-2">9-25 business days</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="space-y-4">
-                <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-                  <p className="text-blue-800">
-                    <strong>*Minimum delivery:</strong> Orders may arrive as early as 3 business days within India, depending on your location.
-                  </p>
-                </div>
-                <div className="bg-orange-50 border-l-4 border-orange-400 p-4">
-                  <p className="text-orange-800">
-                    <strong>*Maximum delivery:</strong> Domestic orders are expected within 9 days; international orders within 25 days.
-                  </p>
-                </div>
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                  <p className="text-yellow-800">
-                    <strong>Note:</strong> Shipping delays due to customs, holidays, natural disasters, or other uncontrollable factors are possible.
-                  </p>
-                </div>
-              </div>
+        <div className="bg-white rounded-xl shadow-sm p-8 sm:p-12">
+          <div className="prose prose-lg prose-stone max-w-none">
+            
+            <section id="domestic-shipping" className="mb-12">
+              <h2 className="!font-serif !text-2xl !font-semibold !text-stone-900 !mb-6 !pb-3 !border-b !border-yellow-600/50">Domestic Shipping</h2>
+              <ul className="!space-y-3">
+                <li>Free shipping on all prepaid orders within India.</li>
+                <li>Orders are typically delivered within 4-7 working days; made-to-order or customized pieces may require 15-45 days.</li>
+                <li>Once dispatched, a tracking number will be provided. All orders are shipped via reputed courier partners.</li>
+                <li>Delivery times may vary due to destination, product availability, or external circumstances.</li>
+              </ul>
             </section>
 
-            <section className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Additional Information</h2>
-              <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
-                <p className="text-red-800 font-medium">
-                  We do not ship to P.O. boxes.
-                </p>
-              </div>
-              <div className="bg-gray-50 border-l-4 border-gray-400 p-4">
-                <p className="text-gray-800">
-                  Please ensure your shipping address is accurate; we are not responsible for delays due to incorrect information.
-                </p>
-              </div>
+            <section id="international-shipping" className="mb-12">
+              <h2 className="!font-serif !text-2xl !font-semibold !text-stone-900 !mb-6 !pb-3 !border-b !border-yellow-600/50">International Shipping</h2>
+              <ul className="!space-y-3">
+                <li>Shipping charges and delivery timelines are calculated at checkout and vary by destination.</li>
+                <li>Customers are responsible for any customs duties or taxes applicable at the destination country.</li>
+              </ul>
             </section>
 
-            <div className="mt-12 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
-                <strong>Contact Information:</strong><br />
-                For shipping-related questions, please contact us at:<br />
-                Email: pradhikshaasilks@gmail.com<br />
-                Phone: +91 99948 19203
-              </p>
-            </div>
+            <section id="contact" className="mt-16">
+                 <h2 className="!font-serif !text-2xl !font-semibold !text-stone-900 !mb-6 !pb-3 !border-b !border-yellow-600/50">Questions About Shipping?</h2>
+                 <p>For any inquiries regarding your shipment or our policies, please feel free to contact us.</p>
+                 <div className="mt-6 bg-stone-100 border-l-4 border-yellow-600 p-6 rounded-r-lg text-stone-800 not-prose">
+                    <p className="my-0"><strong>Email:</strong> <a href="mailto:Shreejewelpalace1983@gmail.com" className="text-primary hover:underline">Shreejewelpalace1983@gmail.com</a></p>
+                    <p className="my-2"><strong>Phone:</strong> +91 99943 65510</p>
+                </div>
+            </section>
+
           </div>
         </div>
       </div>
@@ -93,4 +53,4 @@ function ShippingPolicy() {
   );
 }
 
-export default ShippingPolicy; 
+export default ShippingPolicy;

@@ -22,7 +22,6 @@ import { useDispatch, useSelector } from "react-redux";
 const initialFormData = {
   images: [], // changed from image: null
   title: "",
-  description: "",
   category: "",
   subcategory: "",
   youtubeLink: "",
@@ -30,6 +29,11 @@ const initialFormData = {
   salePrice: "",
   totalStock: "",
   averageReview: 0,
+  material: "",
+  design: "",
+  motif: "",
+  craftsmanship: "",
+  wearability: "",
 };
 
 function AdminProducts() {
@@ -45,16 +49,42 @@ function AdminProducts() {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (currentEditedId && productList.length) {
+      const productToEdit = productList.find(p => p._id === currentEditedId);
+      if (productToEdit) {
+        const { details, ...rest } = productToEdit;
+        setFormData({ ...rest, ...(details || {}) });
+        setUploadedImageUrls(productToEdit.images || []);
+      }
+    }
+  }, [currentEditedId, productList]);
+
   function onSubmit(event) {
     event.preventDefault();
+
+    const {
+      material,
+      design,
+      motif,
+      craftsmanship,
+      wearability,
+      ...restFormData
+    } = formData;
+
+    const submissionData = {
+      ...restFormData,
+      details: { material, design, motif, craftsmanship, wearability },
+    };
 
     currentEditedId !== null
       ? dispatch(
           editProduct({
             id: currentEditedId,
+            // --- MODIFIED START ---
             formData: {
-              ...formData,
-              images: uploadedImageUrls, // send images array
+              ...submissionData,
+              images: uploadedImageUrls,
             },
           })
         ).then((data) => {
@@ -69,7 +99,7 @@ function AdminProducts() {
         })
       : dispatch(
           addNewProduct({
-            ...formData,
+            ...submissionData,
             images: uploadedImageUrls, // send images array
           })
         ).then((data) => {
@@ -94,10 +124,11 @@ function AdminProducts() {
   }
 
   function isFormValid() {
-    return Object.keys(formData)
-      .filter((currentKey) => currentKey !== "averageReview")
-      .map((key) => formData[key] !== "")
-      .every((item) => item);
+    const requiredFields = [
+      "title", "price", "totalStock", "category",
+      "material", "design", "motif", "craftsmanship", "wearability"
+    ];
+    return requiredFields.every(key => formData[key] && formData[key].toString().trim() !== "") && uploadedImageUrls.length > 0;
   }
 
   useEffect(() => {

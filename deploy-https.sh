@@ -26,7 +26,7 @@ if [ ! -f "./ssl/cert.pem" ] || [ ! -f "./ssl/key.pem" ]; then
     print_error "SSL certificates not found!"
     print_status "Generating self-signed certificates..."
     mkdir -p ssl
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/key.pem -out ssl/cert.pem -subj "/C=IN/ST=State/L=City/O=Organization/CN=192.168.29.164"
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/key.pem -out ssl/cert.pem -subj "/C=IN/ST=State/L=City/O=Organization/CN=http://139.59.34.72/"
 fi
 
 # Stop existing containers
@@ -71,14 +71,14 @@ sleep 5
 print_status "Testing HTTPS endpoints..."
 
 # Test frontend HTTPS
-if curl -k -s https://192.168.29.164:3443 > /dev/null 2>&1; then
+if curl -k -s https://http://139.59.34.72/:3443 > /dev/null 2>&1; then
     print_status "✅ Frontend HTTPS is accessible!"
 else
     print_warning "⚠️ Frontend HTTPS check failed. This might be normal during startup."
 fi
 
 # Test API HTTPS
-if curl -k -s https://192.168.29.164:5000 > /dev/null 2>&1; then
+if curl -k -s https://http://139.59.34.72/:5000 > /dev/null 2>&1; then
     print_status "✅ API HTTPS is accessible!"
 else
     print_warning "⚠️ API HTTPS check failed. This might be normal if no endpoint exists."
@@ -86,9 +86,9 @@ fi
 
 echo ""
 print_status "🔒 HTTPS deployment completed!"
-echo "🌐 Frontend (HTTP): http://192.168.29.164:3000"
-echo "🔒 Frontend (HTTPS): https://192.168.29.164:3443"
-echo "🔧 API (HTTPS): https://192.168.29.164:5000"
+echo "🌐 Frontend (HTTP): http://http://139.59.34.72/:3000"
+echo "🔒 Frontend (HTTPS): https://http://139.59.34.72/:3443"
+echo "🔧 API (HTTPS): https://http://139.59.34.72/:5000"
 echo ""
 print_warning "Note: Using self-signed certificates. Browsers will show security warnings."
 print_warning "For production, replace with valid SSL certificates from Let's Encrypt or your domain provider." 

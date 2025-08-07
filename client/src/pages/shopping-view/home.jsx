@@ -168,7 +168,7 @@ function ShoppingHome() {
   return (
     <div className="flex flex-col min-h-screen">
         {/* Banner Section */}
-        <div className="relative w-full h-[920px] mt-16 overflow-hidden">
+        <div className="relative w-full h-[600px] lg:h-[890px] mt-16 overflow-hidden">
             {filteredFeatureImages && filteredFeatureImages.length > 0 ? (
             filteredFeatureImages.map((slide, index) => (
                 <img

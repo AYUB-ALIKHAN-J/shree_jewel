@@ -4,7 +4,13 @@ const ProductSchema = new mongoose.Schema(
   {
     images: [String], // changed from image: String
     title: String,
-    description: String,
+    details: {
+      material: String,
+      design: String,
+      motif: String,
+      craftsmanship: String,
+      wearability: String,
+    },
     category: String,
     subcategory: String,
     youtubeLink: String,      

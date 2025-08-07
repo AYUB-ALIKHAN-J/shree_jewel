@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CommonForm from "../common/form";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { addressFormControls } from "@/config";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,6 +13,7 @@ import {
 import AddressCard from "./address-card";
 import { useToast } from "../ui/use-toast";
 import LocationSelector from "./location-selector";
+import { Plus } from "lucide-react";
 
 const initialAddressFormData = {
   address: "",
@@ -28,27 +30,29 @@ const initialAddressFormData = {
 function Address({ setCurrentSelectedAddress, selectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [statesData, setStatesData] = useState([]);
   const [citiesData, setCitiesData] = useState([]);
+  const addressContainerRef = useRef(null); // Ref for scrolling page up
+
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
   const { toast } = useToast();
 
+  // Effect to scroll the page to the top of the address book after closing the dialog
+  useEffect(() => {
+    if (!isFormOpen && addressContainerRef.current) {
+      addressContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [isFormOpen]);
+
   function handleManageAddress(event) {
     event.preventDefault();
-
     if (addressList.length >= 3 && currentEditedId === null) {
-      setFormData(initialAddressFormData);
-      toast({
-        title: "You can add max 3 addresses",
-        variant: "destructive",
-      });
-
+      toast({ title: "You can add a maximum of 3 addresses", variant: "destructive" });
       return;
     }
-
-    // Always coerce isGift to boolean and phone/pincode to string, and ensure notes is always present
     const safeFormData = {
       ...formData,
       country: formData.country || "",
@@ -59,41 +63,16 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       notes: formData.notes || "",
       isGift: Boolean(formData.isGift),
     };
-
-    console.log("Form data before sending:", formData);
-    console.log("Safe form data:", safeFormData);
-
-    currentEditedId !== null
-      ? dispatch(
-          editaAddress({
-            userId: user?.id,
-            addressId: currentEditedId,
-            formData: safeFormData,
-          })
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllAddresses(user?.id));
-            setCurrentEditedId(null);
-            setFormData(initialAddressFormData);
-            toast({
-              title: "Address updated successfully",
-            });
-          }
-        })
-      : dispatch(
-          addNewAddress({
-            ...safeFormData,
-            userId: user?.id,
-          })
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllAddresses(user?.id));
-            setFormData(initialAddressFormData);
-            toast({
-              title: "Address added successfully",
-            });
-          }
-        });
+    const action = currentEditedId !== null
+      ? editaAddress({ userId: user?.id, addressId: currentEditedId, formData: safeFormData })
+      : addNewAddress({ ...safeFormData, userId: user?.id });
+    dispatch(action).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchAllAddresses(user?.id));
+        setIsFormOpen(false);
+        toast({ title: `Address ${currentEditedId ? 'updated' : 'added'} successfully` });
+      }
+    });
   }
 
   function handleDeleteAddress(getCurrentAddress) {
@@ -102,9 +81,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllAddresses(user?.id));
-        toast({
-          title: "Address deleted successfully",
-        });
+        toast({ title: "Address deleted successfully" });
       }
     });
   }
@@ -112,87 +89,89 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
   function handleEditAddress(getCuurentAddress) {
     setCurrentEditedId(getCuurentAddress?._id);
     setFormData({
-      ...formData,
-      address: getCuurentAddress?.address,
-      country: getCuurentAddress?.country,
-      state: getCuurentAddress?.state,
-      city: getCuurentAddress?.city,
-      phone: getCuurentAddress?.phone,
-      pincode: getCuurentAddress?.pincode,
-      notes: getCuurentAddress?.notes,
-      isGift: Boolean(getCuurentAddress?.isGift),
-      giftMessage: getCuurentAddress?.giftMessage || "",
+      address: getCuurentAddress?.address, country: getCuurentAddress?.country, state: getCuurentAddress?.state,
+      city: getCuurentAddress?.city, phone: getCuurentAddress?.phone, pincode: getCuurentAddress?.pincode,
+      notes: getCuurentAddress?.notes, isGift: Boolean(getCuurentAddress?.isGift), giftMessage: getCuurentAddress?.giftMessage || "",
     });
+    setIsFormOpen(true);
   }
 
+  function handleAddNewClick() {
+    setCurrentEditedId(null);
+    setFormData(initialAddressFormData);
+    setIsFormOpen(true);
+  }
+  
   function isFormValid() {
-    // If isGift is truthy, giftMessage must not be empty
     if (formData.isGift) {
       if (!formData.giftMessage || formData.giftMessage.trim() === "") return false;
     }
-    
-    // Check required fields: address, country, pincode, phone
     const requiredFields = ['address', 'country', 'pincode', 'phone'];
-    const basicValidation = requiredFields.every(field => formData[field] && formData[field].trim() !== "");
-    
+    const basicValidation = requiredFields.every(field => formData[field] && String(formData[field]).trim() !== "");
     if (!basicValidation) return false;
-    
-    // If states are available, state is required
-    if (statesData.length > 0 && (!formData.state || formData.state.trim() === "")) {
-      return false;
-    }
-    
-    // If cities are available, city is required
-    if (citiesData.length > 0 && (!formData.city || formData.city.trim() === "")) {
-      return false;
-    }
-    
+    if (statesData.length > 0 && (!formData.state || formData.state.trim() === "")) return false;
+    if (citiesData.length > 0 && (!formData.city || formData.city.trim() === "")) return false;
     return true;
   }
 
   useEffect(() => {
     dispatch(fetchAllAddresses(user?.id));
-  }, [dispatch]);
-
-  //console.log(addressList, "addressList");
+  }, [dispatch, user]);
 
   return (
-    <Card>
-      <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2  gap-2">
-        {addressList && addressList.length > 0
-          ? addressList.map((singleAddressItem) => (
-              <AddressCard
-                selectedId={selectedId}
-                handleDeleteAddress={handleDeleteAddress}
-                addressInfo={singleAddressItem}
-                handleEditAddress={handleEditAddress}
-                setCurrentSelectedAddress={setCurrentSelectedAddress}
-              />
-            ))
-          : null}
+    <div ref={addressContainerRef} className="bg-white p-6 lg:p-8 rounded-lg border border-gray-200/80 shadow-sm">
+      <div className="flex justify-between items-center mb-8">
+        <h3 className="text-2xl font-serif text-gray-900">Address Book</h3>
+        <Button onClick={handleAddNewClick} className="flex items-center gap-2">
+          <Plus className="h-4 w-4" /> Add New
+        </Button>
       </div>
-      <CardHeader>
-        <CardTitle>
-          {currentEditedId !== null ? "Edit Address" : "Add New Address"}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <LocationSelector 
-          formData={formData} 
-          setFormData={setFormData} 
-          setStatesData={setStatesData}
-          setCitiesData={setCitiesData}
-        />
-        <CommonForm
-          formControls={addressFormControls}
-          formData={formData}
-          setFormData={setFormData}
-          buttonText={currentEditedId !== null ? "Edit" : "Add"}
-          onSubmit={handleManageAddress}
-          isBtnDisabled={!isFormValid()}
-        />
-      </CardContent>
-    </Card>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {addressList && addressList.length > 0 ? (
+          addressList.map((singleAddressItem) => (
+            <AddressCard
+              key={singleAddressItem._id}
+              selectedId={selectedId}
+              handleDeleteAddress={handleDeleteAddress}
+              addressInfo={singleAddressItem}
+              handleEditAddress={handleEditAddress}
+              setCurrentSelectedAddress={setCurrentSelectedAddress}
+            />
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500 py-10">You have no saved addresses.</p>
+        )}
+      </div>
+
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        {/* MODIFIED: The DialogContent is now a flex container with a max height */}
+        <DialogContent className="sm:max-w-[600px] flex flex-col max-h-[82vh]">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle className="text-2xl font-serif">
+              {currentEditedId !== null ? "Edit Destination" : "Add New Destination"}
+            </DialogTitle>
+          </DialogHeader>
+          {/* MODIFIED: This div wraps the form and is now the scrollable area */}
+          <div className="flex-grow overflow-y-auto space-y-4 py-4 pr-4">
+            <LocationSelector 
+              formData={formData} 
+              setFormData={setFormData} 
+              setStatesData={setStatesData}
+              setCitiesData={setCitiesData}
+            />
+            <CommonForm
+              formControls={addressFormControls}
+              formData={formData}
+              setFormData={setFormData}
+              buttonText={currentEditedId !== null ? "Save Changes" : "Add Destination"}
+              onSubmit={handleManageAddress}
+              isBtnDisabled={!isFormValid()}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
 

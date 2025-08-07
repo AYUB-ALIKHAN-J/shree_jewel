@@ -218,6 +218,7 @@ function AdminOrderDetailsView({ orderDetails }) {
                     { id: "inShipping", label: "In Shipping" },
                     { id: "delivered", label: "Delivered" },
                     { id: "rejected", label: "Rejected" },
+                    { id: "cancelled", label: "Cancelled" },
                   ],
                 },
               ]}
