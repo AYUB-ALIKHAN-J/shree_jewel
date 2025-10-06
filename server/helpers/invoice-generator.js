@@ -8,6 +8,7 @@ class InvoiceGenerator {
       size: 'A4',
       margin: 30
     });
+    this.companyGST = '33CHJPP6464M1ZP';
   }
 
   generateInvoice(orderData, userData) {
@@ -114,12 +115,13 @@ class InvoiceGenerator {
     doc.fontSize(12)
        .font('Helvetica')
        .fillColor('#6b7280')
-       .text('Premium Silk Sarees & Traditional Wear', 50, 90);
+       .text('Crafting Stories, Adorning Lives', 50, 90);
     
     // Contact information
     doc.fontSize(10)
        .text('Email: Shreejewelpalace1983@gmail.com', 50, 110)
-       .text('Phone: +91 99943 65510', 50, 125);
+       .text('Phone: +91 99943 65510', 50, 125)
+       .text(`GSTIN: ${this.companyGST}`, 50, 140);
     
     // Add a line separator
     doc.moveTo(50, 150)

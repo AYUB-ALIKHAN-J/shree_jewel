@@ -36,6 +36,9 @@ const OrderSchema = new mongoose.Schema({
   razorpayOrderId: String, // Store Razorpay order ID for webhook matching
   paymentId: String,
   payerId: String,
+},
+{ 
+  timestamps: true 
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

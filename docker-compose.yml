@@ -21,7 +21,7 @@ services:
       - NODE_ENV=production
       - PORT=5000
       - MONGO_URI=mongodb+srv://simdevs25:Infinisk25@cluster0.7bl5jpv.mongodb.net/ShreeJewelPalace?retryWrites=true&w=majority&appName=Cluster0
-      - CLIENT_ORIGIN=https://10.90.174.201
+      - CLIENT_ORIGIN=https://139.59.34.72
       - RAZORPAY_KEY_ID=rzp_test_fqzxCmIIF3PAik
       - RAZORPAY_KEY_SECRET=GFKyxZdqlT7ZYcsiun5nduBy
       - JWT_SECRET=1c3f088fcb907de324fd6d200d661f58

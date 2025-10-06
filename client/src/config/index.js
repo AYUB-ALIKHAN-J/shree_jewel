@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 // API Configuration
 // export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '139.59.34.72';

@@ -19,7 +19,11 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy: {
-        '/api': env.VITE_API_BASE_URL || 'https://http://139.59.34.72/:5000'
+        '/api': {
+          target: env.VITE_API_BASE_URL || 'http://139.59.34.72:5000',
+          changeOrigin: true,
+          secure: false
+        }
       }
     }
   };

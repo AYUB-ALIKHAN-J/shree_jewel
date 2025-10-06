@@ -1,4 +1,4 @@
-const { imageUploadUtil } = require("../../helpers/cloudinary");
+const { imageUploadUtil, imageDeleteUtil } = require("../../helpers/cloudinary");
 const Product = require("../../models/Product");
 const Category = require("../../models/Category");
 const Subcategory = require("../../models/Subcategory");
@@ -120,6 +120,31 @@ const fetchAllProducts = async (req, res) => {
   }
 };
 
+//delete image from cloudinary
+const deleteImage = async (req, res) => {
+  try {
+    const { publicId } = req.body;
+    if (!publicId) {
+      return res.status(400).json({
+        success: false,
+        message: "Public ID is required",
+      });
+    }
+
+    const result = await imageDeleteUtil(publicId);
+    res.json({
+      success: true,
+      result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Error deleting image",
+    });
+  }
+};
+
 //edit a product
 const editProduct = async (req, res) => {
   try {
@@ -169,8 +194,8 @@ const editProduct = async (req, res) => {
     findProduct.salePrice =
       salePrice === "" ? 0 : salePrice || findProduct.salePrice;
     findProduct.totalStock = totalStock || findProduct.totalStock;
-    // Only update images if provided and is a non-empty array
-    if (Array.isArray(images) && images.length > 0) {
+    // Update images if provided
+    if (Array.isArray(images)) {
       findProduct.images = images;
     }
     findProduct.averageReview = averageReview || findProduct.averageReview;
@@ -220,4 +245,5 @@ module.exports = {
   fetchAllProducts,
   editProduct,
   deleteProduct,
+  deleteImage,
 };

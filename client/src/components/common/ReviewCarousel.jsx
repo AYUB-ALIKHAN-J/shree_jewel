@@ -14,7 +14,7 @@ import { Quote, Star, User, ExternalLink, QrCode, MessageCircle, ArrowRight } fr
 import googleReviewQr from "../../assets/google-review-qr.jpeg";
 
 // --- CONFIGURATION ---
-const GOOGLE_REVIEW_LINK = "https://g.page/r/CXDrLf_SMBD1EAI/review";
+const GOOGLE_REVIEW_LINK = "https://g.page/r/CQvkeEFr-JE6EAE/review";
 
 // --- API HELPERS ---
 async function fetchReviews() {

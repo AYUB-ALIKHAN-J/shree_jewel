@@ -56,7 +56,11 @@ function AdminProducts() {
         const { details, ...rest } = productToEdit;
         setFormData({ ...rest, ...(details || {}) });
         setUploadedImageUrls(productToEdit.images || []);
+        setImageFiles([]);
       }
+    } else if (!currentEditedId) {
+      setUploadedImageUrls([]);
+      setImageFiles([]);
     }
   }, [currentEditedId, productList]);
 
@@ -95,6 +99,8 @@ function AdminProducts() {
             setFormData(initialFormData);
             setOpenCreateProductsDialog(false);
             setCurrentEditedId(null);
+            setUploadedImageUrls([]);
+            setImageFiles([]);
           }
         })
       : dispatch(
