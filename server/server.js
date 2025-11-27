@@ -60,8 +60,11 @@ app.use(
   })
 );
 
+
 app.use(cookieParser());
-app.use(express.json());
+// Increase body size limits for large file uploads
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
 // --- API routes ---
 app.use("/api", apiLimiter); // Apply general rate limiting to all /api routes
